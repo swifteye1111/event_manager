@@ -7,7 +7,22 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_numbers(phone_number)
-  phone_number
+  phone_number = number_form(phone_number)
+  if phone_number.length == 10
+    phone_number
+  elsif phone_number.length == 11
+    if phone_number[0] == '1'
+      phone_number[1..10]
+    else
+      'Invalid phone number'
+    end
+  else
+    'Invalid phone number'
+  end
+end
+
+def number_form(num)
+  num.tr('^0-9', '')
 end
 
 def legislators_by_zipcode(zip)
@@ -34,7 +49,7 @@ def save_thank_you_letter(id, form_letter)
   end
 end
 
-puts 'EventManger initialized.'
+puts 'EventManager initialized.'
 
 contents = CSV.open(
   '../event_attendees.csv',
@@ -42,15 +57,15 @@ contents = CSV.open(
   header_converters: :symbol
 )
 
-#template_letter = File.read('../form_letter.erb')
-#erb_template = ERB.new template_letter
+template_letter = File.read('../form_letter.erb')
+erb_template = ERB.new template_letter
 
 contents.each do |row|
   id = row[0]
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode])
-  #legislators = legislators_by_zipcode(zipcode)
-  #form_letter = erb_template.result(binding)
-  #save_thank_you_letter(id, form_letter)
-  puts phone_number = clean_phone_numbers(row[:phone_number])
+  # legislators = legislators_by_zipcode(zipcode)
+  # form_letter = erb_template.result(binding)
+  # save_thank_you_letter(id, form_letter)
+  puts clean_phone_numbers(row[:homephone])
 end
