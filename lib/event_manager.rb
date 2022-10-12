@@ -33,6 +33,11 @@ def find_optimal_window(hours)
   "#{opt_hour}:00 - #{opt_end}:00"
 end
 
+def find_optimal_day(days)
+  opt_day = days.max_by { |day| days.count(day) }
+  Date::DAYNAMES[opt_day]
+end
+
 def legislators_by_zipcode(zip)
   civic_info = Google::Apis::CivicinfoV2::CivicInfoService.new
   civic_info.key = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'
@@ -69,6 +74,7 @@ contents = CSV.open(
 #erb_template = ERB.new template_letter
 
 hours = Array.new
+days = Array.new
 
 contents.each do |row|
   id = row[0]
@@ -79,6 +85,8 @@ contents.each do |row|
   # save_thank_you_letter(id, form_letter)
   #puts clean_phone_numbers(row[:homephone])
   hours.push(Time.strptime(row[:regdate], '%m/%d/%Y %k:%M').hour)
+  days.push(Date.strptime(row[:regdate], '%m/%d/%Y').wday)
 end
 
-puts "The optimal time is #{find_optimal_window(hours)}"
+puts "The optimal time is #{find_optimal_window(hours)}."
+puts "The optimal day is #{find_optimal_day(days)}."
